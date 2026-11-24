@@ -35,9 +35,11 @@ if (bytes.length > 1048576) {
 
 // The grader runs this program twice into the same output directory, and
 // the copies written by the first run are read-only, so clear the
-// destination first; otherwise the second run fails while copying over them.
-rmSync(outDir, { recursive: true, force: true });
+// destination file first; otherwise the second run fails while copying over
+// it. Only the file is removed, never the output directory itself: in the
+// grader /output is a mount point, and removing it fails with EBUSY.
 mkdirSync(outDir, { recursive: true });
+rmSync(target, { force: true });
 writeFileSync(target, bytes);
 
 // Read the copy back and check it matches the source byte for byte, so a
